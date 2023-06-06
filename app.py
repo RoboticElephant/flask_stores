@@ -4,10 +4,10 @@ from flask import Flask, jsonify
 from flask_smorest import Api
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
+from dotenv import load_dotenv
 
 from db import db
 from blocklist import BLOCKLIST
-# import models
 
 from resources.item import blp as ItemBlueprint
 from resources.store import blp as StoreBlueprint
@@ -17,6 +17,7 @@ from resources.user import blp as UserBlueprint
 
 def create_app(db_url=None):
     app = Flask(__name__)
+    load_dotenv()
 
     # If there is an exception hidden inside an extension then propagate it to the main app so it can be seen
     app.config["PROPAGATE_EXCEPTIONS"] = True
@@ -38,10 +39,6 @@ def create_app(db_url=None):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     # Initializes flask's sqlalchemy allowing for the connection of Flask to SQLAlchemy
     db.init_app(app)
-    # Will create all the tables in our database if they don't already exist
-    with app.app_context():
-        db.create_all()
-
     migrate = Migrate(app, db)
     api = Api(app)
 
